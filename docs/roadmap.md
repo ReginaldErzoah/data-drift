@@ -47,6 +47,8 @@ Build a stable, playable, Chrome Dino–style survival game.
 - Survival score tracking
 - Combo multiplier system
 - Reset on failure
+- Current upon failure to show under failure message
+- Highscore record in memory
 
 ---
 

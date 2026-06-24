@@ -1,10 +1,10 @@
-# 🎮 Data Drift
+# Data Drift
 
 > An offline, Chrome Dino-inspired arcade game built in Python for data professionals.
 
 ---
 
-## 🧠 What is Data Drift?
+## What is Data Drift?
 
 **Data Drift** is a simple, fast, and addictive offline game where you survive a stream of corrupted data.
 
@@ -14,7 +14,7 @@ No internet. No setup complexity. Just pure arcade survival.
 
 ---
 
-## 🎯 Game Objective
+## Game Objective
 
 - Survive as long as possible
 - Avoid corrupted data objects
@@ -23,16 +23,16 @@ No internet. No setup complexity. Just pure arcade survival.
 
 ---
 
-## 🎮 Controls
+## Controls
 
 | Key | Action |
 |-----|--------|
-| ⬅️ Left Arrow | Move Left |
-| ➡️ Right Arrow | Move Right |
+| '<' Left Arrow | Move Left |
+| '>' Right Arrow | Move Right |
 
 ---
 
-## 💥 Game Rules
+## Game Rules
 
 - Touching corrupted data = Game Over
 - Surviving longer = Higher Score
@@ -40,27 +40,27 @@ No internet. No setup complexity. Just pure arcade survival.
 
 ---
 
-## 🎨 Game Identity
+## Game Identity
 
 Each falling object represents a **data quality issue**:
 
-- 🔴 NULL → missing data anomaly  
-- 🟠 DUP → duplicate records  
-- 🟣 OUTLIER → extreme values  
-- 🟡 BAD TYPE → invalid schema  
+- NULL > missing data anomaly  
+- DUP > duplicate records  
+- OUTLIER > extreme values  
+- BAD TYPE > invalid schema  
 
 ---
 
-## 🧱 Tech Stack
+## Tech Stack
 
-- Python 🐍
-- Pygame 🎮
+- Python
+- Pygame
 - NumPy (optional future expansion)
 - Pandas (future analytics mode)
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 ### 1. Clone the repo
 ```bash
@@ -102,7 +102,7 @@ python main.py
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 data-drift/
@@ -127,43 +127,43 @@ data-drift/
 
 ---
 
-## 🧠 Why this project exists
+## Why this project exists
 
 This project was built to:
 
-* Make offline coding more fun 🎮
-* Give data professionals a quick arcade break 🧠
-* Explore creative ways of visualizing data quality issues 📊
-* Build a minimalist but iconic Python game 🐍
+* Make offline coding more fun
+* Give data professionals a quick arcade break
+* Explore creative ways of visualizing data quality issues
+* Build a minimalist but iconic Python game
 
 ---
 
-## 🔥 Future Ideas
+## Future Ideas
 
-* Sound effects 🎵
-* Power-ups ⚡
-* Combo system 🔥
-* Boss “Data Crisis” mode 💀
-* High score leaderboard 🏆
-* Web version (Pygame → Web export)
+* Sound effects
+* Power-ups
+* Combo system
+* Boss “Data Crisis” mode 
+* High score leaderboard
+* Web version (Pygame > Web export) and chrome plugin
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Pull requests are welcome.
 Ideas, improvements, and game feel upgrades are encouraged.
 
 ---
 
-## 📜 License
+## License
 
 MIT License
 
 ---
 
-## 🎮 Credits
+## Credits
 
 Built by Reginald Erzoah in Python
-Inspired by Chrome Dino 🦖
+Inspired by Chrome Dino
 Designed for data professionals & creators

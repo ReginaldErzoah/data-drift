@@ -63,7 +63,7 @@ while True:
 
         # difficulty scaling
         if pygame.time.get_ticks() % 2500 < 16:
-            speed_boost += 1
+            speed_boost += 0.5
 
         player.draw(screen)
         score.draw(screen)
