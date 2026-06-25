@@ -64,7 +64,7 @@ Make the game feel like a **real polished indie arcade title**
 
 ---
 
-## Player Enhancements
+## Player Enhancements (completed)
 - Improved glow effects
 - Stronger motion trail system
 - Directional animation smoothing
@@ -79,7 +79,7 @@ Make the game feel like a **real polished indie arcade title**
 
 ---
 
-## Environment Upgrade
+## Environment Upgrade (completed)
 - Excel-style grid background
 - Subtle scrolling data layer
 - Dark UI theme refinement
