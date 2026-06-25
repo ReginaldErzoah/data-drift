@@ -1,6 +1,7 @@
 import pygame
 import math
 
+
 class Player:
     def __init__(self):
         self.x = 380
@@ -9,21 +10,13 @@ class Player:
         self.height = 44
         self.speed = 7
 
-        # distance from bottom of screen
         self.bottom_margin = 30
 
-        # animation state
         self.t = 0
-
-        # stores past positions
         self.trail = []
 
-        # movement direction (smoothed)
         self.direction = 0
-
-        # previous x for smoothing
         self.prev_x = self.x
-
 
     # =========================
     # UPDATE MOVEMENT
@@ -39,27 +32,19 @@ class Player:
         if keys[pygame.K_RIGHT]:
             self.x += self.speed
 
-        # dynamic screen width
         screen_width = pygame.display.get_surface().get_width()
-
-        # keep player inside screen
         self.x = max(0, min(self.x, screen_width - self.width))
 
-        # update vertical position
         self.update_position()
 
-        # animation timer
         self.t += 0.25
 
-        # trail tracking
         self.trail.append(self.x)
-        if len(self.trail) > 14:   # slightly longer trail
+        if len(self.trail) > 14:
             self.trail.pop(0)
 
-        # smoother direction (instead of instant flip)
         raw_direction = self.x - self.prev_x
         self.direction = (self.direction * 0.7) + (raw_direction * 0.3)
-
 
     # =========================
     # RESPONSIVE POSITION
@@ -67,101 +52,91 @@ class Player:
     def update_position(self):
         screen_height = pygame.display.get_surface().get_height()
 
-        self.y = (
-            screen_height
-            - self.height
-            - self.bottom_margin
-        )
-
+        self.y = screen_height - self.height - self.bottom_margin
 
     # =========================
     # DRAW PLAYER
     # =========================
     def draw(self, screen):
 
+        center_x = self.width // 2
+        center_y = self.height // 2
+
         # =========================
-        # TRAIL (IMPROVED DATA STREAM)
+        # TRAIL (FADE STREAM EFFECT)
         # =========================
         for i, tx in enumerate(self.trail):
 
-            fade = i / len(self.trail)
-            size = int(2 + i * 0.5)
+            fade_ratio = i / len(self.trail)
+            alpha_size = int(2 + i * 0.6)
+
+            color_intensity = int(120 + 100 * fade_ratio)
 
             pygame.draw.circle(
                 screen,
-                (0, 200, 180),
-                (
-                    tx + self.width // 2,
-                    self.y + self.height // 2
-                ),
-                size,
+                (0, color_intensity, 180),
+                (tx + center_x, self.y + center_y),
+                alpha_size,
                 1
             )
 
-
         # =========================
-        # BOUNCE EFFECT
+        # BOUNCE + ENERGY EFFECT
         # =========================
         bounce = int(3 * math.sin(self.t * 2))
 
-
         # =========================
-        # SMOOTH LEAN EFFECT
+        # SMOOTH LEAN (CHARACTER FEEL)
         # =========================
         lean = int(self.direction * 0.08)
 
-
-        # =========================
-        # CORE PLAYER POSITION
-        # =========================
         cx = self.x + lean
         cy = self.y + bounce
 
+        # =========================
+        # SILHOUETTE CORE (IMPORTANT FOR READABILITY)
+        # =========================
+        pygame.draw.circle(
+            screen,
+            (0, 0, 0),  # shadow outline for contrast
+            (cx + center_x, cy + center_y),
+            30
+        )
 
         # =========================
-        # IMPROVED MULTI-LAYER GLOW
+        # MULTI-LAYER GLOW
         # =========================
 
-        # outer glow (soft aura)
         pygame.draw.circle(
             screen,
             (0, 255, 220),
-            (cx + self.width // 2, cy + self.height // 2),
-            28
+            (cx + center_x, cy + center_y),
+            26
         )
 
-        # mid glow
         pygame.draw.circle(
             screen,
             (0, 200, 180),
-            (cx + self.width // 2, cy + self.height // 2),
-            20
+            (cx + center_x, cy + center_y),
+            18
         )
 
-        # core body
         pygame.draw.circle(
             screen,
             (0, 140, 120),
-            (cx + self.width // 2, cy + self.height // 2),
-            14
+            (cx + center_x, cy + center_y),
+            12
         )
 
-
         # =========================
-        # IDENTITY SCREEN (DATA ANALYST HUD)
+        # IDENTITY SCREEN (ANALYST HUD)
         # =========================
         pygame.draw.rect(
             screen,
             (10, 20, 35),
-            (
-                cx + 10,
-                cy + 8,
-                28,
-                18
-            ),
+            (cx + 10, cy + 8, 28, 18),
             border_radius=3
         )
-
 
         # =========================
         # DATA SIGNAL LINE
@@ -177,4 +152,13 @@ class Player:
                 (cx + 30, cy + 12)
             ],
             2
+        )
+
+        # =========================
+        # BASE SHADOW (GROUND CONTACT CLARITY)
+        # =========================
+        pygame.draw.ellipse(
+            screen,
+            (0, 60, 50),
+            (cx + 6, cy + 38, 32, 10)
         )
