@@ -15,11 +15,7 @@ pygame.init()
 
 WIDTH, HEIGHT = 800, 500
 
-screen = pygame.display.set_mode(
-    (WIDTH, HEIGHT),
-    pygame.RESIZABLE
-)
-
+screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Data Drift")
 clock = pygame.time.Clock()
 
@@ -30,6 +26,7 @@ clock = pygame.time.Clock()
 player = Player()
 enemies = []
 score = Score()
+
 bg = Background()
 juice = JuiceEngine()
 
@@ -56,7 +53,7 @@ fullscreen = False
 
 
 # =========================
-# RESTART FUNCTION
+# RESTART
 # =========================
 def restart_game():
     global player, enemies, score, game_over, speed_boost
@@ -73,8 +70,10 @@ def restart_game():
 # =========================
 while True:
 
+    screen_width, screen_height = screen.get_size()
+
     juice.update()
-    bg.update(screen.get_height())
+    bg.update(screen_height)
 
     # =========================
     # EVENTS
@@ -85,18 +84,20 @@ while True:
             pygame.quit()
             sys.exit()
 
+        # spawn enemies
         if not game_over and event.type == SPAWN_EVENT:
             enemy = DataEnemy()
             enemy.speed += speed_boost
             enemies.append(enemy)
 
+        # restart
         if game_over and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 restart_game()
 
+        # fullscreen toggle
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
-
                 fullscreen = not fullscreen
 
                 if fullscreen:
@@ -104,18 +105,25 @@ while True:
                 else:
                     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 
-
     # =========================
-    # SHAKE OFFSET
+    # SHAKE
     # =========================
     shake_x, shake_y = juice.get_shake_offset()
 
     # =========================
-    # DRAW
+    # FRAME BUFFER (IMPORTANT FIX)
     # =========================
-    screen.fill((10, 12, 20))
-    bg.draw(screen)
+    frame = pygame.Surface((screen_width, screen_height))
+    frame.fill((10, 12, 20))
 
+    # =========================
+    # BACKGROUND (NOW ALWAYS VISIBLE)
+    # =========================
+    bg.draw(frame)
+
+    # =========================
+    # GAMEPLAY
+    # =========================
     if not game_over:
 
         player.update()
@@ -127,35 +135,29 @@ while True:
                 game_over = True
                 juice.trigger_hit()
 
-            if enemy.y > screen.get_height():
+            if enemy.y > screen_height:
                 enemies.remove(enemy)
                 score.add_survival()
 
         if pygame.time.get_ticks() % 2500 < 16:
             speed_boost += 0.5
 
-        # =========================
-        # APPLY SHAKE (VISUAL ONLY)
-        # =========================
-        temp_surface = pygame.Surface(screen.get_size())
-
-        temp_surface.blit(screen, (0, 0))
-
-        player.draw(temp_surface)
+        player.draw(frame)
 
         for enemy in enemies:
-            enemy.draw(temp_surface)
+            enemy.draw(frame)
 
-        score.draw(temp_surface)
+        score.draw(frame)
 
-        screen.blit(temp_surface, (shake_x, shake_y))
-
+    # =========================
+    # GAME OVER SCREEN
+    # =========================
     else:
 
         if score.get_score() > high_score:
             high_score = score.get_score()
 
-        score.draw_final_score(screen)
+        score.draw_final_score(frame)
 
         font = pygame.font.SysFont("Arial", 22)
 
@@ -171,16 +173,22 @@ while True:
             (200, 200, 200)
         )
 
-        screen.blit(high_text, (
-            screen.get_width() // 2 - high_text.get_width() // 2,
+        frame.blit(high_text, (
+            screen_width // 2 - high_text.get_width() // 2,
             300
         ))
 
-        screen.blit(hint, (
-            screen.get_width() // 2 - hint.get_width() // 2,
+        frame.blit(hint, (
+            screen_width // 2 - hint.get_width() // 2,
             340
         ))
 
+    # =========================
+    # PRESENT FRAME (WITH JUICE SHAKE)
+    # =========================
+    screen.blit(frame, (shake_x, shake_y))
+
+    # overlay effects (flash/particles)
     juice.draw(screen)
 
     pygame.display.update()
