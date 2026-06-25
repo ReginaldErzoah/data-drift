@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 
 class Player:
@@ -18,10 +19,23 @@ class Player:
         self.direction = 0
         self.prev_x = self.x
 
+        # =========================
+        # DEATH SYSTEM
+        # =========================
+        self.is_dead = False
+        self.death_timer = 0
+        self.particles = []
+
     # =========================
     # UPDATE MOVEMENT
     # =========================
     def update(self):
+
+        # if dead → run collapse animation only
+        if self.is_dead:
+            self.update_death()
+            return
+
         keys = pygame.key.get_pressed()
 
         self.prev_x = self.x
@@ -47,6 +61,43 @@ class Player:
         self.direction = (self.direction * 0.7) + (raw_direction * 0.3)
 
     # =========================
+    # TRIGGER DEATH
+    # =========================
+    def die(self):
+
+        if self.is_dead:
+            return
+
+        self.is_dead = True
+        self.death_timer = 60  # ~1 second
+
+        # generate pixel fragments (data collapse)
+        cx = self.x + self.width // 2
+        cy = self.y + self.height // 2
+
+        for _ in range(28):
+            self.particles.append([
+                cx,
+                cy,
+                random.randint(-4, 4),
+                random.randint(-6, 2)
+            ])
+
+    # =========================
+    # DEATH UPDATE (DATA DISSOLVE)
+    # =========================
+    def update_death(self):
+
+        self.death_timer -= 1
+
+        for p in self.particles:
+            p[0] += p[2]
+            p[1] += p[3]
+            p[3] += 0.25  # gravity effect
+
+        self.t += 0.3
+
+    # =========================
     # RESPONSIVE POSITION
     # =========================
     def update_position(self):
@@ -63,8 +114,24 @@ class Player:
         center_y = self.height // 2
 
         # =========================
-        # TRAIL (FADE STREAM EFFECT)
+        # DEATH RENDER (PIXEL DISSOLVE)
         # =========================
+        if self.is_dead:
+
+            for p in self.particles:
+                pygame.draw.rect(
+                    screen,
+                    (0, 255, 220),
+                    (p[0], p[1], 4, 4)
+                )
+
+            return
+
+        # =========================
+        # NORMAL RENDER
+        # =========================
+
+        # TRAIL
         for i, tx in enumerate(self.trail):
 
             fade_ratio = i / len(self.trail)
@@ -80,33 +147,22 @@ class Player:
                 1
             )
 
-        # =========================
-        # BOUNCE + ENERGY EFFECT
-        # =========================
+        # MOTION EFFECTS
         bounce = int(3 * math.sin(self.t * 2))
-
-        # =========================
-        # SMOOTH LEAN (CHARACTER FEEL)
-        # =========================
         lean = int(self.direction * 0.08)
 
         cx = self.x + lean
         cy = self.y + bounce
 
-        # =========================
-        # SILHOUETTE CORE (IMPORTANT FOR READABILITY)
-        # =========================
+        # SILHOUETTE BASE (READABILITY BOOST)
         pygame.draw.circle(
             screen,
-            (0, 0, 0),  # shadow outline for contrast
+            (0, 0, 0),
             (cx + center_x, cy + center_y),
             30
         )
 
-        # =========================
-        # MULTI-LAYER GLOW
-        # =========================
-
+        # GLOW LAYERS
         pygame.draw.circle(
             screen,
             (0, 255, 220),
@@ -128,9 +184,7 @@ class Player:
             12
         )
 
-        # =========================
-        # IDENTITY SCREEN (ANALYST HUD)
-        # =========================
+        # ANALYST HUD
         pygame.draw.rect(
             screen,
             (10, 20, 35),
@@ -138,9 +192,7 @@ class Player:
             border_radius=3
         )
 
-        # =========================
-        # DATA SIGNAL LINE
-        # =========================
+        # SIGNAL LINE
         pygame.draw.lines(
             screen,
             (0, 255, 200),
@@ -154,9 +206,7 @@ class Player:
             2
         )
 
-        # =========================
-        # BASE SHADOW (GROUND CONTACT CLARITY)
-        # =========================
+        # GROUND SHADOW
         pygame.draw.ellipse(
             screen,
             (0, 60, 50),

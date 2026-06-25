@@ -87,7 +87,7 @@ Make the game feel like a **real polished indie arcade title**
 
 ---
 
-# Phase 3 — Game Feel, Juice & Arcade Polish Upgrade
+# Phase 3 — Game Feel, Juice & Arcade Polish Upgrade [Current]
 
 ## Goal
 Transform Data Drift from a solid playable prototype into a **highly polished arcade experience** with Chrome Dino–level game feel, responsiveness, and addictive feedback loops.
