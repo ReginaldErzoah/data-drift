@@ -7,7 +7,7 @@ from game.score import Score
 from game.background import Background
 from game.juice import JuiceEngine
 from game.visual_state import VisualState
-from game.audio import AudioEngine   # 🔊 NEW
+from game.audio import AudioEngine  
 
 
 # =========================
@@ -32,7 +32,7 @@ score = Score()
 bg = Background()
 juice = JuiceEngine()
 visual = VisualState()
-audio = AudioEngine()   # 🔊 NEW
+audio = AudioEngine()  
 
 
 # start ambient music once at boot
@@ -176,7 +176,7 @@ while True:
                 juice.trigger_hit()
                 visual.trigger_hit()
 
-                audio.play_hit()        # 🔊 collision sound
+                audio.play_hit()        
 
             if enemy.y > screen_height:
                 enemies.remove(enemy)
@@ -198,8 +198,7 @@ while True:
         if score.get_score() > high_score:
             high_score = score.get_score()
 
-        audio.play_game_over()   # 🔊 game over sound
-
+        audio.play_game_over()   
         score.draw_final_score(frame)
 
         font = pygame.font.SysFont("Arial", 22)

@@ -10,7 +10,7 @@ class AudioEngine:
         self.volume = 0.25
 
        
-        self.ambient_volume = 0.20
+        self.ambient_volume = 0.25
 
         self.sounds = {}
         self.ambient_channel = None
