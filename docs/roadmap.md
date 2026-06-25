@@ -31,7 +31,6 @@ Build a stable, playable, Chrome Dino–style survival game.
 
 - Lane-based spawning system (prevents safe zones)
 - Consistent hitbox system
-- Arcade-style downward movement
 
 ---
 
@@ -45,7 +44,6 @@ Build a stable, playable, Chrome Dino–style survival game.
 
 ### Score System
 - Survival score tracking
-- Combo multiplier system
 - Reset on failure
 - Current upon failure to show under failure message
 - Highscore record in memory
