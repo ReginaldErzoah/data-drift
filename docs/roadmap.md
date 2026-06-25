@@ -6,7 +6,7 @@ This roadmap defines the evolution in structured phases, from core gameplay to a
 
 ---
 
-# Phase 1 — Core Arcade Foundation (CURRENT)
+# Phase 1 — Core Arcade Foundation (Completed)
 
 ## Goal
 Build a stable, playable, Chrome Dino–style survival game.
@@ -57,7 +57,7 @@ Build a stable, playable, Chrome Dino–style survival game.
 
 ---
 
-# Phase 2 — Visual Polish & Game Feel Upgrade
+# Phase 2 — Visual Polish & Game Feel Upgrade (Current)
 
 ## Goal
 Make the game feel like a **real polished indie arcade title**
