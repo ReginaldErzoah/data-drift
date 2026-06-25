@@ -7,10 +7,10 @@ class AudioEngine:
     def __init__(self):
 
         self.enabled = False
-        self.volume = 0.5
+        self.volume = 0.25
 
        
-        self.ambient_volume = 0.15
+        self.ambient_volume = 0.20
 
         self.sounds = {}
         self.ambient_channel = None
@@ -65,7 +65,7 @@ class AudioEngine:
 
             if sound:
 
-                # 👇 ambient is intentionally quieter
+                # ambient is intentionally quieter
                 if name == "ambient":
                     sound.set_volume(volume * self.ambient_volume)
                 else:
