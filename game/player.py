@@ -27,11 +27,10 @@ class Player:
         self.particles = []
 
     # =========================
-    # UPDATE MOVEMENT
+    # UPDATE
     # =========================
     def update(self):
 
-        # if dead → run collapse animation only
         if self.is_dead:
             self.update_death()
             return
@@ -69,22 +68,25 @@ class Player:
             return
 
         self.is_dead = True
-        self.death_timer = 60  # ~1 second
+        self.death_timer = 60
 
-        # generate pixel fragments (data collapse)
         cx = self.x + self.width // 2
         cy = self.y + self.height // 2
 
-        for _ in range(28):
+        # deterministic burst (more readable than fully random chaos)
+        for i in range(30):
+            angle = (math.pi * 2 * i) / 30
+            speed = random.uniform(2, 6)
+
             self.particles.append([
                 cx,
                 cy,
-                random.randint(-4, 4),
-                random.randint(-6, 2)
+                math.cos(angle) * speed,
+                math.sin(angle) * speed
             ])
 
     # =========================
-    # DEATH UPDATE (DATA DISSOLVE)
+    # DEATH UPDATE (DATA COLLAPSE)
     # =========================
     def update_death(self):
 
@@ -93,12 +95,16 @@ class Player:
         for p in self.particles:
             p[0] += p[2]
             p[1] += p[3]
-            p[3] += 0.25  # gravity effect
+            p[3] += 0.2  # gravity
 
         self.t += 0.3
 
+        # slow fade decay
+        if self.death_timer <= 0:
+            self.particles = []
+
     # =========================
-    # RESPONSIVE POSITION
+    # POSITION
     # =========================
     def update_position(self):
         screen_height = pygame.display.get_surface().get_height()
@@ -106,7 +112,7 @@ class Player:
         self.y = screen_height - self.height - self.bottom_margin
 
     # =========================
-    # DRAW PLAYER
+    # DRAW
     # =========================
     def draw(self, screen):
 
@@ -114,47 +120,58 @@ class Player:
         center_y = self.height // 2
 
         # =========================
-        # DEATH RENDER (PIXEL DISSOLVE)
+        # DEATH RENDER (DATA DISSOLVE)
         # =========================
         if self.is_dead:
 
+            # fade burst particles
             for p in self.particles:
                 pygame.draw.rect(
                     screen,
                     (0, 255, 220),
-                    (p[0], p[1], 4, 4)
+                    (int(p[0]), int(p[1]), 3, 3)
                 )
+
+            # collapse pulse core
+            pulse = int(4 * math.sin(self.t * 0.6))
+
+            pygame.draw.circle(
+                screen,
+                (0, 120, 100),
+                (self.x + center_x, self.y + center_y),
+                18 + pulse
+            )
 
             return
 
         # =========================
-        # NORMAL RENDER
+        # NORMAL TRAIL
         # =========================
-
-        # TRAIL
         for i, tx in enumerate(self.trail):
 
             fade_ratio = i / len(self.trail)
-            alpha_size = int(2 + i * 0.6)
-
-            color_intensity = int(120 + 100 * fade_ratio)
+            size = int(2 + i * 0.5)
 
             pygame.draw.circle(
                 screen,
-                (0, color_intensity, 180),
+                (0, int(150 + 80 * fade_ratio), 180),
                 (tx + center_x, self.y + center_y),
-                alpha_size,
+                size,
                 1
             )
 
-        # MOTION EFFECTS
+        # =========================
+        # MOTION
+        # =========================
         bounce = int(3 * math.sin(self.t * 2))
         lean = int(self.direction * 0.08)
 
         cx = self.x + lean
         cy = self.y + bounce
 
-        # SILHOUETTE BASE (READABILITY BOOST)
+        # =========================
+        # SILHOUETTE (READABILITY)
+        # =========================
         pygame.draw.circle(
             screen,
             (0, 0, 0),
@@ -162,7 +179,9 @@ class Player:
             30
         )
 
-        # GLOW LAYERS
+        # =========================
+        # GLOW STACK
+        # =========================
         pygame.draw.circle(
             screen,
             (0, 255, 220),
@@ -184,7 +203,9 @@ class Player:
             12
         )
 
-        # ANALYST HUD
+        # =========================
+        # HUD
+        # =========================
         pygame.draw.rect(
             screen,
             (10, 20, 35),
@@ -192,7 +213,6 @@ class Player:
             border_radius=3
         )
 
-        # SIGNAL LINE
         pygame.draw.lines(
             screen,
             (0, 255, 200),
@@ -206,7 +226,9 @@ class Player:
             2
         )
 
+        # =========================
         # GROUND SHADOW
+        # =========================
         pygame.draw.ellipse(
             screen,
             (0, 60, 50),
