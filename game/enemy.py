@@ -6,7 +6,7 @@ import math
 class DataEnemy:
 
     # Lanes ensure full screen coverage (prevents corner exploits)
-    LANES = [0, 80, 160, 240, 320, 400, 480, 560, 640, 720]
+    LANES = [i for i in range(0, 760, 80)]
 
     def __init__(self):
 
@@ -17,20 +17,25 @@ class DataEnemy:
 
         self.t = 0
 
-        self.size = 40
+        self.size = 42
 
         self.type = random.choice(
             ["NULL", "DUP", "OUTLIER", "TYPE"]
         )
 
 
+    # =========================
+    # UPDATE
+    # =========================
     def update(self):
 
         self.y += self.speed
+        self.t += 0.25
 
-        self.t += 0.2
 
-
+    # =========================
+    # DRAW ROUTER
+    # =========================
     def draw(self, screen):
 
         if self.type == "NULL":
@@ -47,32 +52,37 @@ class DataEnemy:
 
 
     # =========================
-    # NULL -> Empty Cell
+    # 🔴 NULL (MISSING DATA)
     # =========================
     def draw_null(self, screen):
 
         pulse = int(2 * math.sin(self.t * 3))
 
+        # strong outer frame
         pygame.draw.rect(
             screen,
             (255, 80, 80),
             (self.x, self.y, self.size, self.size),
-            2
+            3
         )
 
+        # missing core (key identity)
         pygame.draw.rect(
             screen,
-            (60, 0, 0),
-            (self.x + 6, self.y + 6,
-             self.size - 12, self.size - 12),
-            1
+            (40, 0, 0),
+            (
+                self.x + 10,
+                self.y + 10,
+                self.size - 20,
+                self.size - 20
+            )
         )
 
+        # blinking “null signal”
         if int(self.t * 4) % 2 == 0:
-
             pygame.draw.circle(
                 screen,
-                (255, 120, 120),
+                (255, 140, 140),
                 (
                     self.x + self.size // 2,
                     self.y + self.size // 2
@@ -82,49 +92,51 @@ class DataEnemy:
 
 
     # =========================
-    # DUP -> Duplicate Rows
+    # 🟠 DUP (DUPLICATE DATA)
     # =========================
     def draw_dup(self, screen):
 
         offset = int(2 * math.sin(self.t * 2))
 
+        # row 1
         pygame.draw.rect(
             screen,
             (255, 170, 0),
-            (self.x, self.y,
-             self.size, self.size // 2),
-            2
+            (self.x, self.y, self.size, self.size // 2),
+            3
         )
 
+        # row 2 (duplicate shifted)
         pygame.draw.rect(
             screen,
-            (255, 200, 80),
+            (255, 210, 80),
             (
                 self.x + offset,
                 self.y + self.size // 2,
                 self.size,
                 self.size // 2
             ),
+            3
+        )
+
+        # duplication separator
+        pygame.draw.line(
+            screen,
+            (255, 220, 120),
+            (self.x + 4, self.y + self.size // 2),
+            (self.x + self.size - 4, self.y + self.size // 2),
             2
         )
 
-        pygame.draw.line(
-            screen,
-            (255, 200, 80),
-            (self.x + 5, self.y + 10),
-            (self.x + self.size - 5, self.y + 10),
-            1
-        )
-
 
     # =========================
-    # OUTLIER -> Chart Spike
+    # 🟣 OUTLIER (SPIKE DATA)
     # =========================
     def draw_outlier(self, screen):
 
-        spike = int(4 * math.sin(self.t * 4))
+        spike = int(5 * math.sin(self.t * 4))
 
-        bars = [10, 18, 12, 35 + spike, 14]
+        bars = [8, 14, 10, 34 + spike, 12]
 
         for i, h in enumerate(bars):
 
@@ -134,31 +146,43 @@ class DataEnemy:
                 screen,
                 color,
                 (
-                    self.x + i * 6,
+                    self.x + i * 7,
                     self.y + self.size - h,
-                    4,
+                    5,
                     h
                 )
             )
 
+        # spike highlight
+        pygame.draw.circle(
+            screen,
+            (255, 120, 255),
+            (
+                self.x + 21,
+                self.y + self.size - (34 + spike)
+            ),
+            4
+        )
+
 
     # =========================
-    # TYPE ERROR -> Broken Column
+    # 🟡 TYPE ERROR (SCHEMA BREAK)
     # =========================
     def draw_type_error(self, screen):
 
-        # GLITCH / CORRUPTION EFFECT 
         flicker = int(2 * math.sin(self.t * 5))
 
         jitter_x = self.x + flicker
 
+        # corrupted block
         pygame.draw.rect(
             screen,
             (255, 255, 0),
             (jitter_x, self.y, self.size, self.size),
-            2
+            3
         )
 
+        # broken structure
         pygame.draw.rect(
             screen,
             (120, 120, 0),
@@ -168,9 +192,10 @@ class DataEnemy:
                 self.size,
                 self.size - 15
             ),
-            1
+            2
         )
 
+        # warning icon
         pygame.draw.polygon(
             screen,
             (255, 255, 0),
@@ -182,6 +207,9 @@ class DataEnemy:
         )
 
 
+    # =========================
+    # COLLISION
+    # =========================
     def collides(self, player):
 
         return (
