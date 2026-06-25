@@ -21,23 +21,31 @@ class DataEnemy:
             ["NULL", "DUP", "OUTLIER", "TYPE"]
         )
 
+        # NEW: external readability override (from main.py)
+        self.speed_level = "NORMAL"
+
     # =========================
     # UPDATE
     # =========================
     def update(self):
-
         self.y += self.speed
         self.t += 0.25
 
     # =========================
-    # READABILITY MODE
+    # READABILITY MODE (ENHANCED SYSTEM)
     # =========================
     def readability_mode(self):
 
-        # 0 = detailed
-        # 1 = simplified
-        # 2 = icon mode (high speed clarity)
+        # PRIORITY: external system (main.py)
+        if hasattr(self, "speed_level"):
 
+            if self.speed_level == "CRITICAL":
+                return 2  # ICON MODE (maximum clarity)
+
+            elif self.speed_level == "FAST":
+                return 1  # SIMPLIFIED MODE
+
+        # fallback: internal speed logic
         if self.speed >= 8:
             return 2
         elif self.speed >= 5:
@@ -69,15 +77,17 @@ class DataEnemy:
     # =========================
     def draw_null(self, screen, mode):
 
+        # ICON MODE → ultra readable block
         if mode == 2:
             pygame.draw.rect(
                 screen,
                 (255, 80, 80),
                 (self.x, self.y, self.size, self.size),
-                2
+                3
             )
             return
 
+        # SIMPLIFIED MODE
         if mode == 1:
             pygame.draw.rect(
                 screen,
@@ -93,7 +103,7 @@ class DataEnemy:
             )
             return
 
-        # detailed mode
+        # DETAILED MODE
         pulse = int(2 * math.sin(self.t * 3))
 
         pygame.draw.rect(
@@ -132,7 +142,7 @@ class DataEnemy:
                 screen,
                 (255, 170, 0),
                 (self.x, self.y, self.size, self.size),
-                2
+                3
             )
             return
 
@@ -184,8 +194,8 @@ class DataEnemy:
             pygame.draw.line(
                 screen,
                 (180, 0, 255),
-                (self.x, self.y + self.size),
-                (self.x + self.size, self.y),
+                (self.x + 10, self.y + self.size - 10),
+                (self.x + self.size - 10, self.y + 10),
                 3
             )
             return
@@ -195,7 +205,7 @@ class DataEnemy:
                 screen,
                 (180, 0, 255),
                 (self.x, self.y, self.size, self.size),
-                2
+                3
             )
             return
 
@@ -223,7 +233,7 @@ class DataEnemy:
                 screen,
                 (255, 255, 0),
                 (self.x, self.y, self.size, self.size),
-                2
+                3
             )
             return
 

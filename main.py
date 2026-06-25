@@ -53,6 +53,22 @@ fullscreen = False
 
 
 # =========================
+# READABILITY / DIFFICULTY STATE (NEW)
+# =========================
+def get_speed_level():
+    """
+    Central readability signal.
+    Used by enemies/player to simplify visuals at high speed.
+    """
+    if speed_boost < 5:
+        return "NORMAL"
+    elif speed_boost < 12:
+        return "FAST"
+    else:
+        return "CRITICAL"
+
+
+# =========================
 # RESTART
 # =========================
 def restart_game():
@@ -75,6 +91,8 @@ while True:
     juice.update()
     bg.update(screen_height)
 
+    speed_level = get_speed_level()  # 🎯 NEW SIGNAL
+
     # =========================
     # EVENTS
     # =========================
@@ -87,7 +105,10 @@ while True:
         # spawn enemies
         if not game_over and event.type == SPAWN_EVENT:
             enemy = DataEnemy()
+
+            # pass difficulty influence indirectly via speed
             enemy.speed += speed_boost
+
             enemies.append(enemy)
 
         # restart
@@ -111,13 +132,13 @@ while True:
     shake_x, shake_y = juice.get_shake_offset()
 
     # =========================
-    # FRAME BUFFER (IMPORTANT FIX)
+    # FRAME BUFFER
     # =========================
     frame = pygame.Surface((screen_width, screen_height))
     frame.fill((10, 12, 20))
 
     # =========================
-    # BACKGROUND (NOW ALWAYS VISIBLE)
+    # BACKGROUND (LOW PRIORITY LAYER)
     # =========================
     bg.draw(frame)
 
@@ -128,8 +149,14 @@ while True:
 
         player.update()
 
+        # pass readability state into player (future use)
+        player.speed_level = speed_level
+
         for enemy in enemies[:]:
             enemy.update()
+
+            # pass readability state into enemy (future use)
+            enemy.speed_level = speed_level
 
             if enemy.collides(player):
                 game_over = True
@@ -139,11 +166,18 @@ while True:
                 enemies.remove(enemy)
                 score.add_survival()
 
+        # difficulty scaling
         if pygame.time.get_ticks() % 2500 < 16:
             speed_boost += 0.5
 
+        # =========================
+        # DRAW ORDER (CLARITY FIRST)
+        # =========================
+
+        # player ALWAYS on top clarity layer
         player.draw(frame)
 
+        # enemies simplified depending on speed_level (handled in enemy.py next step)
         for enemy in enemies:
             enemy.draw(frame)
 
@@ -184,11 +218,10 @@ while True:
         ))
 
     # =========================
-    # PRESENT FRAME (WITH JUICE SHAKE)
+    # PRESENT FRAME
     # =========================
     screen.blit(frame, (shake_x, shake_y))
 
-    # overlay effects (flash/particles)
     juice.draw(screen)
 
     pygame.display.update()
