@@ -139,3 +139,9 @@ class JuiceEngine:
                 (int(p["x"]), int(p["y"])),
                 3
             )
+    
+    def reset(self):
+        self.shake_intensity = 0
+        self.shake_timer = 0
+        self.flash_alpha = 0
+        self.particles.clear()

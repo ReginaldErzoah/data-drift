@@ -6,7 +6,7 @@ from game.enemy import DataEnemy
 from game.score import Score
 from game.background import Background
 from game.juice import JuiceEngine
-from game.visual_state import VisualState   
+from game.visual_state import VisualState
 
 
 # =========================
@@ -30,8 +30,6 @@ score = Score()
 
 bg = Background()
 juice = JuiceEngine()
-
-# ✅ NEW: global visual controller
 visual = VisualState()
 
 
@@ -57,7 +55,7 @@ fullscreen = False
 
 
 # =========================
-# READABILITY STATE
+# SPEED LEVEL (READABILITY SIGNAL)
 # =========================
 def get_speed_level():
     if speed_boost < 5:
@@ -79,8 +77,9 @@ def restart_game():
     game_over = False
     speed_boost = 0
 
-    # reset visuals
+    # reset effects cleanly
     visual.__init__()
+    juice.reset()
 
 
 # =========================
@@ -96,7 +95,7 @@ while True:
     # UPDATE SYSTEMS
     # =========================
     juice.update()
-    bg.update(screen_height)
+    bg.update(screen_height, screen_width)
     visual.update(score.get_score(), speed_boost)
 
     # =========================
@@ -128,7 +127,7 @@ while True:
                     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 
     # =========================
-    # SHAKE OFFSET (Juice + VisualState combined later)
+    # SHAKE OFFSET
     # =========================
     shake_x, shake_y = juice.get_shake_offset()
 
@@ -139,7 +138,7 @@ while True:
     frame.fill((10, 12, 20))
 
     # =========================
-    # BACKGROUND (BASE LAYER)
+    # BACKGROUND LAYER
     # =========================
     bg.draw(frame)
 
@@ -152,14 +151,12 @@ while True:
 
         for enemy in enemies[:]:
             enemy.update()
-
-            # OPTIONAL: future readability hook
             enemy.speed_level = speed_level
 
             if enemy.collides(player):
                 game_over = True
                 juice.trigger_hit()
-                visual.trigger_hit()   
+                visual.trigger_hit()
 
             if enemy.y > screen_height:
                 enemies.remove(enemy)
@@ -170,13 +167,14 @@ while True:
             speed_boost += 0.5
 
         # =========================
-        # DRAW ORDER (CLARITY PRIORITY)
+        # DRAW ORDER (CRITICAL FOR CLARITY)
         # =========================
-        player.draw(frame)
 
+        # enemies FIRST (so player is always readable on top)
         for enemy in enemies:
             enemy.draw(frame)
 
+        player.draw(frame)
         score.draw(frame)
 
     # =========================
@@ -218,9 +216,9 @@ while True:
     # =========================
     screen.blit(frame, (shake_x, shake_y))
 
-    # layered effects
+    # layered FX system
     juice.draw(screen)
-    visual.draw(screen)   # ✅ NEW global flash layer
+    visual.draw(screen)
 
     pygame.display.update()
     clock.tick(60)
