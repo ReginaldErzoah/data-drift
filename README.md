@@ -6,7 +6,7 @@
 
 ## What is Data Drift?
 
-**Data Drift** is a simple, fast, and addictive offline game where you survive a stream of corrupted data.
+**Data Drift** is a simple, fast, and interactive offline game where you survive a stream of corrupted data.
 
 You play as a glowing **Data Node**, moving left and right to avoid broken or corrupted data packets.
 
