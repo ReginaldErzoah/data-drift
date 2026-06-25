@@ -5,6 +5,8 @@ from game.player import Player
 from game.enemy import DataEnemy
 from game.score import Score
 from game.background import Background
+from game.juice import JuiceEngine
+
 
 # =========================
 # INIT
@@ -21,30 +23,29 @@ screen = pygame.display.set_mode(
 pygame.display.set_caption("Data Drift")
 clock = pygame.time.Clock()
 
+
 # =========================
 # GAME OBJECTS
 # =========================
 player = Player()
 enemies = []
 score = Score()
-
-# 🎮 NEW: Background system
 bg = Background()
+juice = JuiceEngine()
+
 
 # =========================
-# HIGH SCORE (IN MEMORY)
+# HIGH SCORE
 # =========================
 high_score = 0
+
 
 # =========================
 # SPAWN SYSTEM
 # =========================
 SPAWN_EVENT = pygame.USEREVENT + 1
+pygame.time.set_timer(SPAWN_EVENT, 900)
 
-pygame.time.set_timer(
-    SPAWN_EVENT,
-    900
-)
 
 # =========================
 # GAME STATE
@@ -58,23 +59,13 @@ fullscreen = False
 # RESTART FUNCTION
 # =========================
 def restart_game():
-
-    global player
-    global enemies
-    global score
-    global game_over
-    global speed_boost
+    global player, enemies, score, game_over, speed_boost
 
     player = Player()
-
     enemies.clear()
-
     score.reset()
-
     game_over = False
-
     speed_boost = 0
-
 
 
 # =========================
@@ -82,104 +73,91 @@ def restart_game():
 # =========================
 while True:
 
-
-    # =========================
-    # UPDATE BACKGROUND FIRST
-    # =========================
+    juice.update()
     bg.update(screen.get_height())
-
-    # draw background FIRST (base layer)
-    bg.draw(screen)
-
 
     # =========================
     # EVENTS
     # =========================
     for event in pygame.event.get():
+
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
-
-        # Spawn enemies
-        if (
-            not game_over
-            and event.type == SPAWN_EVENT
-        ):
+        if not game_over and event.type == SPAWN_EVENT:
             enemy = DataEnemy()
             enemy.speed += speed_boost
             enemies.append(enemy)
 
-
-        # Restart
-        if (
-            game_over
-            and event.type == pygame.KEYDOWN
-        ):
+        if game_over and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 restart_game()
 
-
-
-        # Fullscreen toggle
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
+
                 fullscreen = not fullscreen
+
                 if fullscreen:
-                    screen = pygame.display.set_mode(
-                        (0, 0),
-                        pygame.FULLSCREEN
-                    )
+                    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
                 else:
-                    screen = pygame.display.set_mode(
-                        (WIDTH, HEIGHT),
-                        pygame.RESIZABLE
-                    )
-
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 
 
     # =========================
-    # ACTIVE GAME
+    # SHAKE OFFSET
     # =========================
+    shake_x, shake_y = juice.get_shake_offset()
+
+    # =========================
+    # DRAW
+    # =========================
+    screen.fill((10, 12, 20))
+    bg.draw(screen)
+
     if not game_over:
+
         player.update()
+
         for enemy in enemies[:]:
             enemy.update()
-            enemy.draw(screen)
 
-            # collision
             if enemy.collides(player):
                 game_over = True
+                juice.trigger_hit()
 
-            # survived
             if enemy.y > screen.get_height():
                 enemies.remove(enemy)
                 score.add_survival()
 
-        # difficulty scaling
         if pygame.time.get_ticks() % 2500 < 16:
             speed_boost += 0.5
 
         # =========================
-        # DRAW GAME LAYER
+        # APPLY SHAKE (VISUAL ONLY)
         # =========================
-        player.draw(screen)
-        score.draw(screen)
+        temp_surface = pygame.Surface(screen.get_size())
 
-    # =========================
-    # GAME OVER SCREEN
-    # =========================
+        temp_surface.blit(screen, (0, 0))
+
+        player.draw(temp_surface)
+
+        for enemy in enemies:
+            enemy.draw(temp_surface)
+
+        score.draw(temp_surface)
+
+        screen.blit(temp_surface, (shake_x, shake_y))
+
     else:
-        # update high score
+
         if score.get_score() > high_score:
             high_score = score.get_score()
 
         score.draw_final_score(screen)
 
-        font = pygame.font.SysFont(
-            "Arial",
-            22
-        )
+        font = pygame.font.SysFont("Arial", 22)
 
         high_text = font.render(
             f"High Score: {high_score}",
@@ -193,26 +171,17 @@ while True:
             (200, 200, 200)
         )
 
-        screen.blit(
-            high_text,
-            (
-                screen.get_width() // 2
-                - high_text.get_width() // 2,
+        screen.blit(high_text, (
+            screen.get_width() // 2 - high_text.get_width() // 2,
+            300
+        ))
 
-                300
-            )
-        )
+        screen.blit(hint, (
+            screen.get_width() // 2 - hint.get_width() // 2,
+            340
+        ))
 
-        screen.blit(
-            hint,
-            (
-                screen.get_width() // 2
-                - hint.get_width() // 2,
-
-                340
-            )
-        )
-
+    juice.draw(screen)
 
     pygame.display.update()
     clock.tick(60)
