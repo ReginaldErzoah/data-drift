@@ -68,7 +68,6 @@ def restart_game():
 # =========================
 # MAIN LOOP
 # =========================
-
 while True:
     screen.fill(
         (10, 12, 20)
@@ -83,8 +82,6 @@ while True:
             pygame.quit()
             sys.exit()
 
-
-
         # Spawn enemies
         if (
             not game_over
@@ -94,8 +91,6 @@ while True:
             enemy.speed += speed_boost
             enemies.append(enemy)
 
-
-
         # Restart
         if (
             game_over
@@ -103,8 +98,6 @@ while True:
         ):
             if event.key == pygame.K_r:
                 restart_game()
-
-
 
         # Fullscreen toggle
         if event.type == pygame.KEYDOWN:
@@ -120,8 +113,6 @@ while True:
                         (WIDTH, HEIGHT),
                         pygame.RESIZABLE
                     )
-
-
 
     # =========================
     # ACTIVE GAME
@@ -141,20 +132,15 @@ while True:
                 enemies.remove(enemy)
                 score.add_survival()
 
-
-
         # difficulty scaling
         if pygame.time.get_ticks() % 2500 < 16:
             speed_boost += 0.5
         player.draw(screen)
         score.draw(screen)
 
-
-
     # =========================
     # GAME OVER SCREEN
     # =========================
-
     else:
         score.draw_final_score(screen)
         font = pygame.font.SysFont(
