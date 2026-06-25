@@ -6,6 +6,7 @@ from game.enemy import DataEnemy
 from game.score import Score
 from game.background import Background
 from game.juice import JuiceEngine
+from game.visual_state import VisualState   
 
 
 # =========================
@@ -30,6 +31,9 @@ score = Score()
 bg = Background()
 juice = JuiceEngine()
 
+# ✅ NEW: global visual controller
+visual = VisualState()
+
 
 # =========================
 # HIGH SCORE
@@ -53,19 +57,14 @@ fullscreen = False
 
 
 # =========================
-# READABILITY / DIFFICULTY STATE (NEW)
+# READABILITY STATE
 # =========================
 def get_speed_level():
-    """
-    Central readability signal.
-    Used by enemies/player to simplify visuals at high speed.
-    """
     if speed_boost < 5:
         return "NORMAL"
     elif speed_boost < 12:
         return "FAST"
-    else:
-        return "CRITICAL"
+    return "CRITICAL"
 
 
 # =========================
@@ -80,6 +79,9 @@ def restart_game():
     game_over = False
     speed_boost = 0
 
+    # reset visuals
+    visual.__init__()
+
 
 # =========================
 # MAIN LOOP
@@ -88,10 +90,14 @@ while True:
 
     screen_width, screen_height = screen.get_size()
 
+    speed_level = get_speed_level()
+
+    # =========================
+    # UPDATE SYSTEMS
+    # =========================
     juice.update()
     bg.update(screen_height)
-
-    speed_level = get_speed_level()  # 🎯 NEW SIGNAL
+    visual.update(score.get_score(), speed_boost)
 
     # =========================
     # EVENTS
@@ -102,23 +108,18 @@ while True:
             pygame.quit()
             sys.exit()
 
-        # spawn enemies
         if not game_over and event.type == SPAWN_EVENT:
             enemy = DataEnemy()
-
-            # pass difficulty influence indirectly via speed
             enemy.speed += speed_boost
-
             enemies.append(enemy)
 
-        # restart
         if game_over and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 restart_game()
 
-        # fullscreen toggle
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
+
                 fullscreen = not fullscreen
 
                 if fullscreen:
@@ -127,7 +128,7 @@ while True:
                     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 
     # =========================
-    # SHAKE
+    # SHAKE OFFSET (Juice + VisualState combined later)
     # =========================
     shake_x, shake_y = juice.get_shake_offset()
 
@@ -138,7 +139,7 @@ while True:
     frame.fill((10, 12, 20))
 
     # =========================
-    # BACKGROUND (LOW PRIORITY LAYER)
+    # BACKGROUND (BASE LAYER)
     # =========================
     bg.draw(frame)
 
@@ -149,18 +150,16 @@ while True:
 
         player.update()
 
-        # pass readability state into player (future use)
-        player.speed_level = speed_level
-
         for enemy in enemies[:]:
             enemy.update()
 
-            # pass readability state into enemy (future use)
+            # OPTIONAL: future readability hook
             enemy.speed_level = speed_level
 
             if enemy.collides(player):
                 game_over = True
                 juice.trigger_hit()
+                visual.trigger_hit()   
 
             if enemy.y > screen_height:
                 enemies.remove(enemy)
@@ -171,13 +170,10 @@ while True:
             speed_boost += 0.5
 
         # =========================
-        # DRAW ORDER (CLARITY FIRST)
+        # DRAW ORDER (CLARITY PRIORITY)
         # =========================
-
-        # player ALWAYS on top clarity layer
         player.draw(frame)
 
-        # enemies simplified depending on speed_level (handled in enemy.py next step)
         for enemy in enemies:
             enemy.draw(frame)
 
@@ -222,7 +218,9 @@ while True:
     # =========================
     screen.blit(frame, (shake_x, shake_y))
 
+    # layered effects
     juice.draw(screen)
+    visual.draw(screen)   # ✅ NEW global flash layer
 
     pygame.display.update()
     clock.tick(60)
