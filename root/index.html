@@ -1,159 +1,157 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8" />
   <title>Data Drift</title>
   <style>
-    body {
-      margin: 0;
-      background: #0f1117;
-      color: white;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
-
-    canvas {
-      display: block;
-      margin: 0 auto;
-      background: #0a0c10;
-    }
-
-    #ui {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 18px;
-    }
-
+    body { margin:0; background:#0f1117; overflow:hidden; color:white; font-family:sans-serif;}
+    canvas { display:block; margin:auto; background:#0a0c10; }
+    #ui { position:absolute; top:10px; left:10px; }
     #gameOver {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      display: none;
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      display:none;
+      text-align:center;
     }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      background: #00ffcc;
-      border: none;
-      color: black;
-      margin-top: 10px;
-    }
+    button { padding:10px 20px; background:#00ffcc; border:none; cursor:pointer; }
   </style>
 </head>
 
 <body>
-  <div id="ui">
-    Score: <span id="score">0</span>
-  </div>
+<div id="ui">Score: <span id="score">0</span></div>
 
-  <div id="gameOver">
-    <h1>Data Corrupted!</h1>
-    <button onclick="restart()">Restart</button>
-  </div>
+<div id="gameOver">
+  <h1>Data Corrupted</h1>
+  <button onclick="restart()">Restart</button>
+</div>
 
-  <canvas id="game" width="800" height="500"></canvas>
+<canvas id="c" width="800" height="500"></canvas>
 
-  <script>
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d");
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
 
-    const scoreEl = document.getElementById("score");
-    const gameOverScreen = document.getElementById("gameOver");
+const W = 800;
+const H = 500;
 
-    let player = { x: 380, y: 450, w: 40, h: 40 };
-    let keys = {};
-    let enemies = [];
-    let score = 0;
-    let gameOver = false;
+let keys = {};
+let gameOver = false;
 
-    document.addEventListener("keydown", e => keys[e.key] = true);
-    document.addEventListener("keyup", e => keys[e.key] = false);
+let player = {
+  x: 380,
+  y: 450,
+  w: 40,
+  h: 40,
+  speed: 5
+};
 
-    function spawnEnemy() {
-      const types = ["NULL", "DUP", "OUTLIER", "BAD TYPE"];
-      enemies.push({
-        x: Math.random() * 760,
-        y: -20,
-        w: 40,
-        h: 40,
-        type: types[Math.floor(Math.random() * types.length)],
-        speed: 2 + Math.random() * 3
-      });
+let enemies = [];
+let score = 0;
+let spawnTimer = 0;
+let baseSpawnRate = 60; // frames
+
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+// EXACT-style spawn (controlled like Pygame timer)
+function spawnEnemy() {
+  const types = ["NULL", "DUP", "OUTLIER", "BAD TYPE"];
+
+  enemies.push({
+    x: Math.random() * (W - 40),
+    y: -40,
+    w: 40,
+    h: 40,
+    type: types[Math.floor(Math.random() * types.length)],
+    speed: 2 + (score / 500) // difficulty scaling EXACT like EXE-style ramp
+  });
+}
+
+// collision (pixel-accurate AABB like Pygame)
+function collide(a, b) {
+  return (
+    a.x < b.x + b.w &&
+    a.x + a.w > b.x &&
+    a.y < b.y + b.h &&
+    a.y + a.h > b.y
+  );
+}
+
+function update() {
+  if (gameOver) return;
+
+  // movement (EXE-style fixed speed)
+  if (keys["ArrowLeft"]) player.x -= player.speed;
+  if (keys["ArrowRight"]) player.x += player.speed;
+
+  // clamp
+  player.x = Math.max(0, Math.min(W - player.w, player.x));
+
+  // spawn timing (NOT random spam)
+  spawnTimer++;
+
+  let dynamicRate = Math.max(20, baseSpawnRate - Math.floor(score / 200));
+
+  if (spawnTimer >= dynamicRate) {
+    spawnEnemy();
+    spawnTimer = 0;
+  }
+
+  // update enemies
+  for (let e of enemies) {
+    e.y += e.speed;
+
+    if (collide(player, e)) {
+      gameOver = true;
+      document.getElementById("gameOver").style.display = "block";
     }
+  }
 
-    function update() {
-      if (gameOver) return;
+  // cleanup (EXE behavior)
+  enemies = enemies.filter(e => e.y < H + 50);
 
-      // movement
-      if (keys["ArrowLeft"] && player.x > 0) player.x -= 5;
-      if (keys["ArrowRight"] && player.x < 760) player.x += 5;
+  // scoring (frame-based like EXE)
+  score++;
+  document.getElementById("score").innerText = Math.floor(score / 10);
+}
 
-      // spawn enemies
-      if (Math.random() < 0.03) spawnEnemy();
+function draw() {
+  ctx.clearRect(0, 0, W, H);
 
-      // update enemies
-      enemies.forEach(e => {
-        e.y += e.speed;
+  // player
+  ctx.fillStyle = "#00ffcc";
+  ctx.fillRect(player.x, player.y, player.w, player.h);
 
-        // collision
-        if (
-          player.x < e.x + e.w &&
-          player.x + player.w > e.x &&
-          player.y < e.y + e.h &&
-          player.y + player.h > e.y
-        ) {
-          gameOver = true;
-          gameOverScreen.style.display = "block";
-        }
-      });
+  // enemies
+  for (let e of enemies) {
+    ctx.fillStyle = "#ff4d4d";
+    ctx.fillRect(e.x, e.y, e.w, e.h);
 
-      // remove off-screen
-      enemies = enemies.filter(e => e.y < 500);
+    ctx.fillStyle = "white";
+    ctx.font = "12px Arial";
+    ctx.fillText(e.type, e.x, e.y - 5);
+  }
+}
 
-      // score
-      score++;
-      scoreEl.innerText = Math.floor(score / 10);
-    }
+// EXE-style game loop (fixed 60 FPS logic approximation)
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
 
-    function draw() {
-      ctx.clearRect(0, 0, 800, 500);
+function restart() {
+  player.x = 380;
+  enemies = [];
+  score = 0;
+  spawnTimer = 0;
+  gameOver = false;
+  document.getElementById("gameOver").style.display = "none";
+}
 
-      // player
-      ctx.fillStyle = "#00ffcc";
-      ctx.fillRect(player.x, player.y, player.w, player.h);
-
-      // enemies
-      enemies.forEach(e => {
-        ctx.fillStyle = "#ff4d4d";
-        ctx.fillRect(e.x, e.y, e.w, e.h);
-
-        ctx.fillStyle = "white";
-        ctx.font = "12px Arial";
-        ctx.fillText(e.type, e.x, e.y - 5);
-      });
-    }
-
-    function loop() {
-      update();
-      draw();
-      requestAnimationFrame(loop);
-    }
-
-    function restart() {
-      player.x = 380;
-      enemies = [];
-      score = 0;
-      gameOver = false;
-      gameOverScreen.style.display = "none";
-      loop();
-    }
-
-    loop();
-  </script>
+loop();
+</script>
 </body>
 </html>
