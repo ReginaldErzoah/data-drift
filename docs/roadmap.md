@@ -36,7 +36,7 @@ Make the game feel like a real indie arcade title.
 
 ---
 
-# Phase 3 - Game Feel & Juice (Current Focus)
+# Phase 3 - Game Feel & Juice (Completed)
 
 ## Goal
 
