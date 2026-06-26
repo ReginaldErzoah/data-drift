@@ -7,7 +7,6 @@ from game.score import Score
 from game.background import Background
 from game.juice import JuiceEngine
 from game.visual_state import VisualState
-from game.audio import AudioEngine  
 
 
 # =========================
@@ -32,11 +31,6 @@ score = Score()
 bg = Background()
 juice = JuiceEngine()
 visual = VisualState()
-audio = AudioEngine()  
-
-
-# start ambient music once at boot
-audio.start_ambient()
 
 
 # =========================
@@ -83,11 +77,9 @@ def restart_game():
     game_over = False
     speed_boost = 0
 
-    # reset systems
+    # reset visual systems only
     visual.__init__()
     juice.reset()
-    audio.reset()
-    audio.start_ambient()
 
 
 # =========================
@@ -120,12 +112,9 @@ while True:
             enemy.speed += speed_boost
             enemies.append(enemy)
 
-            audio.play_ui()  # optional subtle spawn click
-
         if game_over and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 restart_game()
-                audio.play_ui()
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
@@ -137,14 +126,10 @@ while True:
                 else:
                     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 
-                audio.play_ui()
-
-
     # =========================
     # SHAKE OFFSET
     # =========================
     shake_x, shake_y = juice.get_shake_offset()
-
 
     # =========================
     # FRAME BUFFER
@@ -152,12 +137,10 @@ while True:
     frame = pygame.Surface((screen_width, screen_height))
     frame.fill((10, 12, 20))
 
-
     # =========================
     # BACKGROUND LAYER
     # =========================
     bg.draw(frame)
-
 
     # =========================
     # GAMEPLAY
@@ -172,11 +155,8 @@ while True:
 
             if enemy.collides(player):
                 game_over = True
-
                 juice.trigger_hit()
                 visual.trigger_hit()
-
-                audio.play_hit()        
 
             if enemy.y > screen_height:
                 enemies.remove(enemy)
@@ -198,7 +178,6 @@ while True:
         if score.get_score() > high_score:
             high_score = score.get_score()
 
-        audio.play_game_over()   
         score.draw_final_score(frame)
 
         font = pygame.font.SysFont("Arial", 22)
@@ -224,7 +203,6 @@ while True:
             screen_width // 2 - hint.get_width() // 2,
             340
         ))
-
 
     # =========================
     # PRESENT FRAME
