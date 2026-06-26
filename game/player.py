@@ -45,7 +45,11 @@ class Player:
         if keys[pygame.K_RIGHT]:
             self.x += self.speed
 
-        screen_width = pygame.display.get_surface().get_width()
+        screen = pygame.display.get_surface()
+        if screen:
+                screen_width = screen.get_width()
+        else:
+            screen_width = 800  
         self.x = max(0, min(self.x, screen_width - self.width))
 
         self.update_position()
