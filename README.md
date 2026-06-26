@@ -1,100 +1,127 @@
 # Data Drift
 
-> An offline, Chrome Dino-inspired arcade game built in Python for data professionals.
+## What is Data Drift?
+
+**Data Drift** is a fast-paced offline arcade game where you survive a stream of corrupted data while working as a glowing **Data Node**.
+
+You move left and right to avoid failing data systems and survive as long as possible.
+
+Now available in two formats:
+
+* Standalone Python Game
+* VS Code Extension (one-click launch inside editor)
 
 ---
 
-## What is Data Drift?
+## VS Code Extension Mode (NEW)
 
-**Data Drift** is a simple, fast, and interactive offline game where you survive a stream of corrupted data.
+Data Drift can now be launched directly inside VS Code.
 
-You play as a glowing **Data Node**, moving left and right to avoid broken or corrupted data packets.
+### Features
 
-No internet. No setup complexity. Just pure arcade survival.
+* One-click game launch from sidebar
+* Built for quick focus breaks during coding
+* Runs completely offline
+* Launches bundled executable instantly
+* No setup required for end users
+
+### How to Use (Extension)
+
+1. Install the VSIX extension
+2. Open VS Code sidebar
+3. Click **Data Drift**
+4. Press **Play Data Drift**
+5. Game launches instantly
 
 ---
 
 ## Game Objective
 
-- Survive as long as possible
-- Avoid corrupted data objects
-- Score increases the longer you survive
-- Difficulty increases over time
+* Survive as long as possible
+* Avoid corrupted data objects
+* Score increases over time
+* Difficulty scales dynamically
 
 ---
 
 ## Controls
 
-| Key | Action |
-|-----|--------|
-| '<' Left Arrow | Move Left |
-| '>' Right Arrow | Move Right |
+| Key           | Action     |
+| ------------- | ---------- |
+| < Left Arrow  | Move Left  |
+| > Right Arrow | Move Right |
 
 ---
 
 ## Game Rules
 
-- Touching corrupted data = Game Over
-- Surviving longer = Higher Score
-- Speed increases over time
+* Touching corrupted data = Game Over
+* Longer survival = Higher score
+* Speed increases progressively
 
 ---
 
-## Game Identity
+## Data Identity System
 
-Each falling object represents a **data quality issue**:
+Each falling object represents a real-world data issue:
 
-- NULL > missing data anomaly  
-- DUP > duplicate records  
-- OUTLIER > extreme values  
-- BAD TYPE > invalid schema  
+* **NULL** → missing data anomaly
+* **DUP** → duplicate records
+* **OUTLIER** → extreme values
+* **BAD TYPE** → schema mismatch
 
 ---
 
 ## Tech Stack
 
-- Python
-- Pygame
-- NumPy (optional future expansion)
-- Pandas (future analytics mode)
+* Python
+* Pygame
+* Node.js (VS Code extension layer)
+* VS Code Extension API
+* PyInstaller (for EXE packaging)
 
 ---
 
-## How to Run
+## File Setup & Distribution
 
-### 1. Clone the repo
-```bash
-git clone https://github.com/your-username/data-drift.git
-cd data-drift
-````
+This project now supports **three distribution layers**:
 
-### 2. Create virtual environment
+### 1. VS Code Extension (Recommended)
 
-```bash
-python -m venv venv
+Used to launch the game directly inside VS Code.
+
+```
+datadrift-vscode-extension/
+│
+├── extension.js
+├── package.json
+├── icons/
+├── dist/
+│   └── DataDrift.exe
+└── README.md
 ```
 
-### 3. Activate environment
+Install via:
 
-**Windows (Git Bash):**
+* `.vsix` file OR GitHub Releases
 
-```bash
-source venv/Scripts/activate
+---
+
+### 2. Standalone Game (Python Source)
+
+Original game version:
+
+```
+data-drift/
+│
+├── main.py
+├── game/
+├── assets/
+├── requirements.txt
+└── README.md
 ```
 
-**Mac/Linux:**
-
-```bash
-source venv/bin/activate
-```
-
-### 4. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 5. Run the game
+Run locally:
 
 ```bash
 python main.py
@@ -102,28 +129,17 @@ python main.py
 
 ---
 
-## Project Structure
+### 3. Packaged Executable (Offline Mode)
+
+Used by VS Code extension:
 
 ```
-data-drift/
-│
-├── main.py
-├── requirements.txt
-├── README.md
-│
-├── game/
-│   ├── player.py
-│   ├── enemy.py
-│   ├── score.py
-│
-├── assets/
-│   ├── fonts/
-│   ├── sounds/
-│   ├── images
-│
-├── docs/
-└── tests/
+dist/DataDrift/
+├── DataDrift.exe
+└── _internal/
 ```
+
+This is bundled and launched automatically.
 
 ---
 
@@ -131,28 +147,33 @@ data-drift/
 
 This project was built to:
 
-* Make offline coding more fun
-* Give data professionals a quick arcade break
-* Explore creative ways of visualizing data quality issues
-* Build a minimalist but iconic Python game
+* Make coding breaks more engaging
+* Help data professionals reset focus
+* Visualize data quality issues creatively
+* Experiment with game-based productivity tools
+* Explore VS Code extension + game hybrid systems
 
 ---
 
-## Future Ideas
+## Future Improvements
 
-* Sound effects
-* Power-ups
-* Combo system
-* Boss “Data Crisis” mode 
-* High score leaderboard
-* Web version (Pygame > Web export) and chrome plugin
+* Sound effects system
+* Leaderboard system
+* Web version (browser playable)
+* Enhanced VS Code integration (timer + analytics)
 
 ---
 
 ## Contributing
 
 Pull requests are welcome.
-Ideas, improvements, and game feel upgrades are encouraged.
+
+Ideas encouraged:
+
+* gameplay tuning
+* UI improvements
+* performance optimization
+* VS Code UX enhancements
 
 ---
 
@@ -162,8 +183,17 @@ MIT License
 
 ---
 
-## Credits
+## Author
 
-Built by Reginald Erzoah in Python
-Inspired by Chrome Dino
-Designed for data professionals & creators
+Built by **Reginald Erzoah**
+
+---
+
+## Summary
+
+Data Drift is now:
+
+* A playable arcade game
+* A VS Code extension
+* A distributable offline executable
+* A productivity-focused developer tool
