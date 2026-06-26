@@ -12,7 +12,7 @@ With one click, you can launch the game and step away from coding for a short me
 
 ---
 
-## ✨ Features
+## Features
 
 * Instant game launch from VS Code sidebar
 * Designed for quick focus and break sessions
