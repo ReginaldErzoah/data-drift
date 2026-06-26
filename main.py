@@ -7,7 +7,7 @@ from game.score import Score
 from game.background import Background
 from game.juice import JuiceEngine
 from game.visual_state import VisualState
-
+from game.version import VERSION
 
 # =========================
 # INIT
@@ -20,7 +20,6 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Data Drift")
 clock = pygame.time.Clock()
 
-
 # =========================
 # GAME OBJECTS
 # =========================
@@ -32,12 +31,10 @@ bg = Background()
 juice = JuiceEngine()
 visual = VisualState()
 
-
 # =========================
 # HIGH SCORE
 # =========================
 high_score = 0
-
 
 # =========================
 # SPAWN SYSTEM
@@ -45,14 +42,12 @@ high_score = 0
 SPAWN_EVENT = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWN_EVENT, 900)
 
-
 # =========================
 # GAME STATE
 # =========================
 game_over = False
 speed_boost = 0
 fullscreen = False
-
 
 # =========================
 # SPEED LEVEL
@@ -63,7 +58,6 @@ def get_speed_level():
     elif speed_boost < 12:
         return "FAST"
     return "CRITICAL"
-
 
 # =========================
 # RESTART
@@ -80,6 +74,13 @@ def restart_game():
     visual.__init__()
     juice.reset()
 
+# =========================
+# VERSION UI (SMALL UTILITY)
+# =========================
+def draw_version(frame):
+    font = pygame.font.SysFont("Arial", 14)
+    text = font.render(f"v{VERSION}", True, (120, 120, 120))
+    frame.blit(text, (10, 10))
 
 # =========================
 # MAIN LOOP
@@ -107,22 +108,16 @@ while True:
             pygame.quit()
             sys.exit()
 
-        # =========================
-        # SPAWN ENEMIES (FIXED)
-        # =========================
+        # SPAWN ENEMIES
         if not game_over and event.type == SPAWN_EVENT:
-            enemies.append(DataEnemy(screen_width))  # always current width
+            enemies.append(DataEnemy(screen_width))
 
-        # =========================
         # RESTART
-        # =========================
         if game_over and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 restart_game()
 
-        # =========================
-        # FULLSCREEN TOGGLE
-        # =========================
+        # FULLSCREEN
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
 
@@ -173,7 +168,7 @@ while True:
         if pygame.time.get_ticks() % 2500 < 16:
             speed_boost += 0.5
 
-        # DRAW ORDER
+        # DRAW
         for enemy in enemies:
             enemy.draw(frame)
 
@@ -210,6 +205,11 @@ while True:
             screen_width // 2 - hint.get_width() // 2,
             340
         ))
+
+    # =========================
+    # VERSION (UI LAYER)
+    # =========================
+    draw_version(frame)
 
     # =========================
     # PRESENT FRAME
