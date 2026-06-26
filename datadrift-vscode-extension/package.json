@@ -4,17 +4,42 @@
   "description": "Launch Data Drift instantly for quick focus breaks",
   "version": "1.0.0",
   "publisher": "reginald-erzoah",
+
   "engines": {
     "vscode": "^1.85.0"
   },
+
   "categories": ["Other"],
+
+  "activationEvents": ["*"],
+
   "main": "./extension.js",
+
   "contributes": {
     "commands": [
       {
         "command": "data-drift.launch",
-        "title": "Launch Data Drift Break Game"
+        "title": "Play Data Drift"
       }
-    ]
+    ],
+
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "datadrift",
+          "title": "Data Drift",
+          "icon": "icons/icon.png"
+        }
+      ]
+    },
+
+    "views": {
+      "datadrift": [
+        {
+          "id": "datadriftView",
+          "name": "Quick Break"
+        }
+      ]
+    }
   }
 }
