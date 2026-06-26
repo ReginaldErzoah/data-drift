@@ -1,34 +1,33 @@
-# Gameplay
+# Gameplay — Data Drift
+
+## Core Loop
+
+1. Player moves left/right
+2. Data anomalies spawn above screen
+3. Player avoids collisions
+4. Score increases over time
+5. Difficulty increases automatically
 
 ---
 
-## Controls
+## Win Condition
 
-- '<' Move left
-- '>' Move right
-
----
-
-## Player
-
-The player is a **Data Node Runner** representing a data professional.
-
-They must avoid incoming data errors.
+None — survival is the goal.
 
 ---
 
-## Objective
+## Loss Condition
 
-- Avoid all data errors
-- Survive longer for higher score
-- Difficulty increases over time
+- Collision with any DataEnemy
 
 ---
 
-## Game Loop
+## Difficulty System
 
-1. Enemies spawn
-2. Player dodges
-3. Survival increases score
-4. Speed gradually increases
-5. Collision ends game
+Speed increases over time:
+- NORMAL → FAST → CRITICAL
+
+This affects:
+- Enemy speed
+- Visual intensity
+- Readability mode of enemies
