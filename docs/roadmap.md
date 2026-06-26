@@ -61,7 +61,7 @@ Make gameplay feel responsive and satisfying (Chrome Dino-level polish)
 
 ---
 
-### 3. Difficulty Curve (NEXT)
+### 3. Difficulty Curve 
 
 * Controlled speed increase
 * Structured escalation
@@ -69,7 +69,7 @@ Make gameplay feel responsive and satisfying (Chrome Dino-level polish)
 
 ---
 
-### 4. Animation Polish (NEXT)
+### 4. Animation Polish 
 
 * Smooth trail fading
 * Better motion consistency

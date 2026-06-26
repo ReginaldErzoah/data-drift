@@ -40,7 +40,7 @@ high_score = 0
 
 
 # =========================
-# SPAWN SYSTEM
+# SPAWN SYSTEM (dynamic now)
 # =========================
 SPAWN_EVENT = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWN_EVENT, 900)
@@ -50,32 +50,58 @@ pygame.time.set_timer(SPAWN_EVENT, 900)
 # GAME STATE
 # =========================
 game_over = False
-speed_boost = 0
 fullscreen = False
 
 
 # =========================
-# SPEED LEVEL
+# PHASE SYSTEM (NEW)
 # =========================
-def get_speed_level():
-    if speed_boost < 5:
-        return "NORMAL"
-    elif speed_boost < 12:
-        return "FAST"
-    return "CRITICAL"
+def get_phase(score_value):
+
+    if score_value < 20:
+        return 1
+    elif score_value < 50:
+        return 2
+    elif score_value < 100:
+        return 3
+    else:
+        return 4
+
+
+def get_speed_multiplier(phase):
+
+    if phase == 1:
+        return 1.0
+    elif phase == 2:
+        return 1.4
+    elif phase == 3:
+        return 1.8
+    else:
+        return 2.3
+
+
+def get_spawn_rate(phase):
+
+    if phase == 1:
+        return 900
+    elif phase == 2:
+        return 750
+    elif phase == 3:
+        return 600
+    else:
+        return 450
 
 
 # =========================
 # RESTART
 # =========================
 def restart_game():
-    global player, enemies, score, game_over, speed_boost
+    global player, enemies, score, game_over
 
     player = Player()
     enemies.clear()
     score.reset()
     game_over = False
-    speed_boost = 0
 
     visual.__init__()
     juice.reset()
@@ -89,14 +115,19 @@ while True:
     screen_width = screen.get_width()
     screen_height = screen.get_height()
 
-    speed_level = get_speed_level()
+    current_score = score.get_score()
+    phase = get_phase(current_score)
+    speed_multiplier = get_speed_multiplier(phase)
+
+    # dynamically adjust spawn difficulty
+    pygame.time.set_timer(SPAWN_EVENT, get_spawn_rate(phase))
 
     # =========================
     # UPDATE SYSTEMS
     # =========================
     juice.update()
     bg.update(screen_height, screen_width)
-    visual.update(score.get_score(), speed_boost)
+    visual.update(current_score, phase)
 
     # =========================
     # EVENTS
@@ -107,22 +138,18 @@ while True:
             pygame.quit()
             sys.exit()
 
-        # =========================
-        # SPAWN ENEMIES (FIXED)
-        # =========================
+        # SPAWN
         if not game_over and event.type == SPAWN_EVENT:
-            enemies.append(DataEnemy(screen_width))  # always current width
+            enemy = DataEnemy(screen_width)
+            enemy.speed *= speed_multiplier
+            enemies.append(enemy)
 
-        # =========================
         # RESTART
-        # =========================
         if game_over and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 restart_game()
 
-        # =========================
-        # FULLSCREEN TOGGLE
-        # =========================
+        # FULLSCREEN
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
 
@@ -158,7 +185,7 @@ while True:
 
         for enemy in enemies[:]:
             enemy.update()
-            enemy.speed_level = speed_level
+            enemy.speed_level = "CRITICAL" if phase >= 3 else "FAST" if phase == 2 else "NORMAL"
 
             if enemy.collides(player):
                 game_over = True
@@ -168,10 +195,6 @@ while True:
             if enemy.y > screen_height:
                 enemies.remove(enemy)
                 score.add_survival()
-
-        # difficulty scaling
-        if pygame.time.get_ticks() % 2500 < 16:
-            speed_boost += 0.5
 
         # DRAW ORDER
         for enemy in enemies:
