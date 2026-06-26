@@ -186,14 +186,3 @@ MIT License
 ## Author
 
 Built by **Reginald Erzoah**
-
----
-
-## Summary
-
-Data Drift is now:
-
-* A playable arcade game
-* A VS Code extension
-* A distributable offline executable
-* A productivity-focused developer tool
