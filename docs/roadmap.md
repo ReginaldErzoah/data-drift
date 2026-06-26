@@ -69,7 +69,7 @@ Make gameplay feel responsive and satisfying (Chrome Dino-level polish)
 
 ---
 
-# Phase 4 - Packaging & Distribution (NEW FOCUS)
+# Phase 4 - Packaging & Distribution (Current)
 
 ## Goal
 
@@ -77,7 +77,7 @@ Make the game easily installable and playable anywhere.
 
 ---
 
-## 1. Windows EXE Build
+## 1. Windows EXE Build (Completed)
 
 * PyInstaller packaging
 * Single-file executable option
@@ -85,7 +85,7 @@ Make the game easily installable and playable anywhere.
 
 ---
 
-## 2. VSCode Extension Version
+## 2. VSCode Extension Version (Ongoing)
 
 ### Purpose:
 
@@ -95,8 +95,8 @@ A “break tool” for developers
 
 * Launch game from VSCode sidebar
 * Lightweight embedded runtime
-* Pause-work -> play 2–5 min session
-* Resume coding instantly
+* .vsix file already available
+* left with vscode extensions market publishing
 
 ---
 
