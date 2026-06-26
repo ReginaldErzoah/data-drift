@@ -1,18 +1,22 @@
-const vscode = require('vscode');
+const vscode = require("vscode");
+const { execFile } = require("child_process");
+const path = require("path");
 
 function activate(context) {
     let disposable = vscode.commands.registerCommand(
-        'data-drift.launch',
+        "data-drift.launch",
         function () {
-            vscode.window.showInformationMessage('Launching Data Drift...');
 
-            // TODO: replace this with your actual EXE path later
-            const { exec } = require('child_process');
+            const exePath = path.join(
+                __dirname,
+                "release",
+                "v1.0.0",
+                "DataDrift.exe"
+            );
 
-            exec('dist/DataDrift/DataDrift.exe', (err) => {
+            execFile(exePath, (err) => {
                 if (err) {
-                    vscode.window.showErrorMessage('Failed to launch Data Drift');
-                    console.error(err);
+                    vscode.window.showErrorMessage("Failed to launch Data Drift");
                 }
             });
         }
