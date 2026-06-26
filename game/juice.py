@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 
 
 class JuiceEngine:
@@ -10,16 +11,17 @@ class JuiceEngine:
         # SCREEN SHAKE
         # =========================
         self.shake_intensity = 0
-        self.shake_decay = 0.85  # smooth decay factor
+        self.shake_decay = 0.88  # slightly smoother than before
+        self.shake_seed = random.random() * 1000
 
         # =========================
         # FLASH EFFECT
         # =========================
         self.flash_alpha = 0
-        self.flash_decay = 0.88  # smoother fade-out
+        self.flash_decay = 0.86
 
         # =========================
-        # SLOW MOTION (reserved for future use)
+        # SLOW MOTION
         # =========================
         self.slowmo_factor = 1
 
@@ -28,12 +30,14 @@ class JuiceEngine:
         # =========================
         self.particles = []
 
+        # frame counter for stable motion
+        self.t = 0
+
 
     # =========================
     # TRIGGERS
     # =========================
     def trigger_hit(self):
-
         self.shake_intensity = 10
         self.flash_alpha = 140
         self.slowmo_factor = 0.35
@@ -42,7 +46,6 @@ class JuiceEngine:
 
 
     def trigger_combo(self):
-
         self.spawn_particles(10)
 
 
@@ -56,10 +59,11 @@ class JuiceEngine:
             self.particles.append({
                 "x": random.randint(0, screen_w),
                 "y": random.randint(0, screen_h),
-                "vx": random.uniform(-3, 3),
-                "vy": random.uniform(-3, 3),
+                "vx": random.uniform(-2.5, 2.5),
+                "vy": random.uniform(-2.5, 2.5),
                 "life": random.randint(25, 50),
-                "color": (0, 255, 200)
+                "color": (0, 255, 200),
+                "alpha": 255
             })
 
 
@@ -68,57 +72,61 @@ class JuiceEngine:
     # =========================
     def update(self):
 
+        self.t += 1
+
         # -------------------------
         # SHAKE (smooth decay)
         # -------------------------
         self.shake_intensity *= self.shake_decay
-        if self.shake_intensity < 0.2:
+        if self.shake_intensity < 0.15:
             self.shake_intensity = 0
 
         # -------------------------
         # FLASH (smooth fade)
         # -------------------------
         self.flash_alpha *= self.flash_decay
-        if self.flash_alpha < 2:
+        if self.flash_alpha < 1:
             self.flash_alpha = 0
 
         # -------------------------
-        # SLOWMO (simple decay back to normal)
+        # SLOWMO (return to normal)
         # -------------------------
         if self.slowmo_factor < 1:
-            self.slowmo_factor += 0.02
+            self.slowmo_factor += 0.015
         if self.slowmo_factor > 1:
             self.slowmo_factor = 1
 
         # -------------------------
-        # PARTICLES
+        # PARTICLES (stable motion)
         # -------------------------
         for p in self.particles[:]:
 
             p["x"] += p["vx"]
             p["y"] += p["vy"]
-            p["life"] -= 1
 
-            # fade out velocity slightly
-            p["vx"] *= 0.98
-            p["vy"] *= 0.98
+            p["vx"] *= 0.97
+            p["vy"] *= 0.97
+
+            p["life"] -= 1
+            p["alpha"] = max(0, p.get("alpha", 255) - 8)
 
             if p["life"] <= 0:
                 self.particles.remove(p)
 
 
     # =========================
-    # SHAKE OFFSET
+    # SHAKE OFFSET (SMOOTHER THAN RANDOM JITTER)
     # =========================
     def get_shake_offset(self):
 
         if self.shake_intensity <= 0:
             return 0, 0
 
-        return (
-            random.randint(-int(self.shake_intensity), int(self.shake_intensity)),
-            random.randint(-int(self.shake_intensity), int(self.shake_intensity))
-        )
+        # smooth pseudo-noise instead of pure random jitter
+        offset_x = math.sin(self.t * 0.9 + self.shake_seed) * self.shake_intensity
+        offset_y = math.cos(self.t * 1.1 + self.shake_seed) * self.shake_intensity
+
+        return int(offset_x), int(offset_y)
 
 
     # =========================
@@ -134,7 +142,7 @@ class JuiceEngine:
             overlay.fill((255, 0, 0))
             screen.blit(overlay, (0, 0))
 
-        # PARTICLES
+        # PARTICLES (slightly smoother rendering)
         for p in self.particles:
 
             pygame.draw.circle(
@@ -152,5 +160,6 @@ class JuiceEngine:
 
         self.shake_intensity = 0
         self.flash_alpha = 0
-        self.particles.clear()
         self.slowmo_factor = 1
+        self.particles.clear()
+        self.t = 0

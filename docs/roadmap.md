@@ -53,15 +53,7 @@ Make gameplay feel responsive and satisfying (Chrome Dino-level polish)
 
 ---
 
-### 2. Readability System 
-
-* Enemy simplification at high speed
-* Clear silhouette-first design
-* Reduced visual noise during fast gameplay
-
----
-
-### 3. Difficulty Curve 
+### 2. Difficulty Curve 
 
 * Controlled speed increase
 * Structured escalation
@@ -69,7 +61,7 @@ Make gameplay feel responsive and satisfying (Chrome Dino-level polish)
 
 ---
 
-### 4. Animation Polish 
+### 3. Animation Polish 
 
 * Smooth trail fading
 * Better motion consistency
