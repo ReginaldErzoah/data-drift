@@ -86,7 +86,6 @@ def restart_game():
 # =========================
 while True:
 
-    # ✅ ALWAYS use reliable size source
     screen_width = screen.get_width()
     screen_height = screen.get_height()
 
@@ -112,9 +111,7 @@ while True:
         # SPAWN ENEMIES (FIXED)
         # =========================
         if not game_over and event.type == SPAWN_EVENT:
-            enemy = DataEnemy(screen_width)   # 🔥 FIX: pass width
-            enemy.speed += speed_boost
-            enemies.append(enemy)
+            enemies.append(DataEnemy(screen_width))  # always current width
 
         # =========================
         # RESTART
@@ -124,7 +121,7 @@ while True:
                 restart_game()
 
         # =========================
-        # FULLSCREEN TOGGLE (FIXED PROPAGATION)
+        # FULLSCREEN TOGGLE
         # =========================
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
@@ -135,11 +132,6 @@ while True:
                     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
                 else:
                     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
-
-                # 🔥 FIX: update all enemies to new width
-                screen_width = screen.get_width()
-                for enemy in enemies:
-                    enemy.update_screen_width(screen_width)
 
     # =========================
     # SHAKE OFFSET

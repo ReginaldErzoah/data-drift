@@ -1,8 +1,6 @@
 # Data Drift - Roadmap
 > A lightweight, offline, addictive arcade survival game with data-themed visuals.
 
-
-
 ---
 
 # Phase 1 - Core Arcade Foundation (Completed)
