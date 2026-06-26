@@ -4,6 +4,9 @@
   <img src="https://github.com/ReginaldErzoah/data-drift/blob/main/assets/images/datadrift-logo.png" width="400" alt="Data Drift Logo">
 </p>
 
+![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+
 ## What is Data Drift?
 
 **Data Drift** is a fast-paced offline arcade game where you survive a stream of corrupted data while working as a glowing **Data Node**.
