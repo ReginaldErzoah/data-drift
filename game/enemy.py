@@ -9,6 +9,7 @@ class DataEnemy:
 
         self.screen_width = screen_width
 
+        # spawn anywhere across FULL width
         self.x = random.uniform(0, screen_width - 42)
         self.y = -40
 
@@ -24,12 +25,6 @@ class DataEnemy:
         self.speed_level = "NORMAL"
 
     # =========================
-    # UPDATE SCREEN WIDTH (important for resize)
-    # =========================
-    def update_screen_width(self, width):
-        self.screen_width = width
-
-    # =========================
     # UPDATE
     # =========================
     def update(self):
@@ -37,70 +32,103 @@ class DataEnemy:
         self.t += 0.25
 
     # =========================
-    # READABILITY MODE
-    # =========================
-    def readability_mode(self):
-
-        if hasattr(self, "speed_level"):
-
-            if self.speed_level == "CRITICAL":
-                return 2
-            elif self.speed_level == "FAST":
-                return 1
-
-        if self.speed >= 8:
-            return 2
-        elif self.speed >= 5:
-            return 1
-        return 0
-
-    # =========================
-    # DRAW ROUTER
+    # DRAW ROUTER (RESTORED FULL VISUALS)
     # =========================
     def draw(self, screen):
 
-        mode = self.readability_mode()
-
         if self.type == "NULL":
-            self.draw_null(screen, mode)
+            self.draw_null(screen)
+
         elif self.type == "DUP":
-            self.draw_dup(screen, mode)
+            self.draw_dup(screen)
+
         elif self.type == "OUTLIER":
-            self.draw_outlier(screen, mode)
+            self.draw_outlier(screen)
+
         else:
-            self.draw_type_error(screen, mode)
+            self.draw_type_error(screen)
 
     # =========================
     # NULL
     # =========================
-    def draw_null(self, screen, mode):
+    def draw_null(self, screen):
 
-        if mode == 2:
-            pygame.draw.rect(screen, (255, 80, 80), (self.x, self.y, self.size, self.size), 3)
-            return
-
-        pygame.draw.rect(screen, (255, 80, 80), (self.x, self.y, self.size, self.size), 3)
+        pygame.draw.rect(
+            screen,
+            (255, 80, 80),
+            (self.x, self.y, self.size, self.size),
+            3
+        )
 
     # =========================
     # DUP
     # =========================
-    def draw_dup(self, screen, mode):
+    def draw_dup(self, screen):
 
-        pygame.draw.rect(screen, (255, 170, 0), (self.x, self.y, self.size, self.size), 3)
+        pygame.draw.rect(
+            screen,
+            (255, 170, 0),
+            (self.x, self.y, self.size, self.size // 2),
+            3
+        )
+
+        pygame.draw.rect(
+            screen,
+            (255, 210, 80),
+            (self.x, self.y + self.size // 2, self.size, self.size // 2),
+            3
+        )
 
     # =========================
     # OUTLIER
     # =========================
-    def draw_outlier(self, screen, mode):
+    def draw_outlier(self, screen):
 
-        pygame.draw.rect(screen, (180, 0, 255), (self.x, self.y, self.size, self.size), 3)
+        spike = int(5 * math.sin(self.t * 4))
+
+        bars = [8, 14, 10, 34 + spike, 12]
+
+        for i, h in enumerate(bars):
+
+            color = (180, 0, 255) if i != 3 else (255, 80, 255)
+
+            pygame.draw.rect(
+                screen,
+                color,
+                (self.x + i * 7, self.y + self.size - h, 5, h)
+            )
 
     # =========================
     # TYPE ERROR
     # =========================
-    def draw_type_error(self, screen, mode):
+    def draw_type_error(self, screen):
 
-        pygame.draw.rect(screen, (255, 255, 0), (self.x, self.y, self.size, self.size), 3)
+        flicker = int(2 * math.sin(self.t * 5))
+        jitter_x = self.x + flicker
+
+        pygame.draw.rect(
+            screen,
+            (255, 255, 0),
+            (jitter_x, self.y, self.size, self.size),
+            3
+        )
+
+        pygame.draw.rect(
+            screen,
+            (120, 120, 0),
+            (jitter_x, self.y + 15, self.size, self.size - 15),
+            2
+        )
+
+        pygame.draw.polygon(
+            screen,
+            (255, 255, 0),
+            [
+                (jitter_x + self.size - 8, self.y + 3),
+                (jitter_x + self.size - 2, self.y + 12),
+                (jitter_x + self.size - 14, self.y + 12)
+            ]
+        )
 
     # =========================
     # COLLISION
