@@ -3,6 +3,7 @@ DATA DRIFT
 ====================================
 
 Version: 1.0.0
+Release Date: 2026-06-26
 Build: Windows (PyInstaller)
 Type: Offline Single-Player Game
 

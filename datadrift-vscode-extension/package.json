@@ -1,0 +1,20 @@
+{
+  "name": "data-drift",
+  "displayName": "Data Drift",
+  "description": "Launch Data Drift instantly for quick focus breaks",
+  "version": "1.0.0",
+  "publisher": "reginald-erzoah",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "data-drift.launch",
+        "title": "Launch Data Drift Break Game"
+      }
+    ]
+  }
+}
