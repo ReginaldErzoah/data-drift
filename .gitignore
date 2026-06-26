@@ -46,6 +46,7 @@ htmlcov/
 # =========================
 .DS_Store
 Thumbs.db
+node_modules/
 
 # =========================
 # Game assets (optional ignores)
