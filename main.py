@@ -55,7 +55,7 @@ fullscreen = False
 
 
 # =========================
-# SPEED LEVEL (READABILITY SIGNAL)
+# SPEED LEVEL
 # =========================
 def get_speed_level():
     if speed_boost < 5:
@@ -77,7 +77,6 @@ def restart_game():
     game_over = False
     speed_boost = 0
 
-    # reset visual systems only
     visual.__init__()
     juice.reset()
 
@@ -87,7 +86,9 @@ def restart_game():
 # =========================
 while True:
 
-    screen_width, screen_height = screen.get_size()
+    # ✅ ALWAYS use reliable size source
+    screen_width = screen.get_width()
+    screen_height = screen.get_height()
 
     speed_level = get_speed_level()
 
@@ -107,15 +108,24 @@ while True:
             pygame.quit()
             sys.exit()
 
+        # =========================
+        # SPAWN ENEMIES (FIXED)
+        # =========================
         if not game_over and event.type == SPAWN_EVENT:
-            enemy = DataEnemy()
+            enemy = DataEnemy(screen_width)   # 🔥 FIX: pass width
             enemy.speed += speed_boost
             enemies.append(enemy)
 
+        # =========================
+        # RESTART
+        # =========================
         if game_over and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 restart_game()
 
+        # =========================
+        # FULLSCREEN TOGGLE (FIXED PROPAGATION)
+        # =========================
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11:
 
@@ -125,6 +135,11 @@ while True:
                     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
                 else:
                     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+
+                # 🔥 FIX: update all enemies to new width
+                screen_width = screen.get_width()
+                for enemy in enemies:
+                    enemy.update_screen_width(screen_width)
 
     # =========================
     # SHAKE OFFSET
@@ -138,7 +153,7 @@ while True:
     frame.fill((10, 12, 20))
 
     # =========================
-    # BACKGROUND LAYER
+    # BACKGROUND
     # =========================
     bg.draw(frame)
 
