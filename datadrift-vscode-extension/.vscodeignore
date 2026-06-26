@@ -1,0 +1,8 @@
+.vscode/
+build/
+*.pyc
+__pycache__/
+*.spec
+
+# optional dev folders
+node_modules/
