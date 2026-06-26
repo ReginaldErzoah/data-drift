@@ -20,28 +20,6 @@ Now available in two formats:
 
 ---
 
-## VS Code Extension Mode (NEW)
-
-Data Drift can now be launched directly inside VS Code.
-
-### Features
-
-* One-click game launch from sidebar
-* Built for quick focus breaks during coding
-* Runs completely offline
-* Launches bundled executable instantly
-* No setup required for end users
-
-### How to Use (Extension)
-
-1. Install the VSIX extension
-2. Open VS Code sidebar
-3. Click **Data Drift**
-4. Press **Play Data Drift**
-5. Game launches instantly
-
----
-
 ## Game Objective
 
 * Survive as long as possible
@@ -72,10 +50,10 @@ Data Drift can now be launched directly inside VS Code.
 
 Each falling object represents a real-world data issue:
 
-* **NULL** → missing data anomaly
-* **DUP** → duplicate records
-* **OUTLIER** → extreme values
-* **BAD TYPE** → schema mismatch
+* **NULL** -> missing data anomaly
+* **DUP** -> duplicate records
+* **OUTLIER** -> extreme values
+* **BAD TYPE** -> schema mismatch
 
 ---
 
