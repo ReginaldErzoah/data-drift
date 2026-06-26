@@ -1,27 +1,38 @@
-# Game Mechanics
+# Mechanics — Data Drift
+
+## Movement
+
+- Player moves horizontally
+- Boundaries enforced by screen width
 
 ---
 
-## Scoring System
+## Enemy System
 
-- +1 point per survived enemy
-- Score increases with time survived
-
----
-
-## Difficulty Scaling
-
-- Enemy speed increases over time
-- Spawn rate increases gradually
+Each enemy:
+- Spawns randomly across full screen width
+- Falls vertically
+- Has type-based visual representation
 
 ---
 
 ## Collision System
 
-Collision between player and enemy ends the run.
+Axis-aligned bounding box (AABB):
+
+- Player rectangle
+- Enemy rectangle
+
+Collision triggers:
+- Game over
+- Screen shake
+- Visual impact effect
 
 ---
 
-## Fairness Rule
+## Difficulty Scaling
 
-Enemies spawn across full screen lanes to avoid safe zones.
+Every few seconds:
+- speed_boost increases
+- enemy speed increases
+- readability mode escalates

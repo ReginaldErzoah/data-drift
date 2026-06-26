@@ -1,4 +1,4 @@
-# Design — Data Drift
+# Design - Data Drift
 
 ## Visual Philosophy
 

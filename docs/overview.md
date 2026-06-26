@@ -1,40 +1,23 @@
-# Data Drift
+# Overview — Data Drift
 
-Data Drift is an offline arcade-style survival game inspired by the Chrome Dino game.
+Data Drift is a fast-paced arcade survival game where the player navigates a field of procedurally generated "data anomalies".
 
-Instead of a dinosaur, the player is a **data professional navigating a stream of data quality issues**.
-
----
-
-## Concept
-
-Modern data systems constantly suffer from:
-
-- Missing values (NULLs)
-- Duplicate records
-- Outliers
-- Type mismatches
-
-In Data Drift, these become **moving obstacles** in a survival game.
-
----
-
-## Goal
-
-Survive as long as possible by avoiding data errors while the game speed increases over time.
-
----
-
-## Target Audience
-
-- Data Analysts
-- Data Scientists
-- Data Engineers
-- BI Developers
-- Students learning data concepts
+The game blends:
+- minimalist visuals
+- adaptive readability systems
+- real-time feedback loops
 
 ---
 
 ## Core Idea
 
-Turn boring data problems into an interactive arcade experience.
+The player is a data node trying to survive increasing system corruption.
+
+---
+
+## Key Systems
+
+- Procedural enemy spawning
+- Adaptive difficulty scaling
+- Visual feedback engine (JuiceEngine)
+- Global visual state controller
