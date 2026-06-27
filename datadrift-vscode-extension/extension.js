@@ -5,6 +5,7 @@ const path = require('path');
 function activate(context) {
 
     console.log("Data Drift Extension Activated");
+    vscode.window.showInformationMessage("Data Drift Activated");
 
     // Command fallback
     const command = vscode.commands.registerCommand(

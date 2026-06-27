@@ -26,6 +26,11 @@
 
   "categories": ["Other"],
 
+  "activationEvents": [
+    "onView:datadriftView",
+    "onCommand:data-drift.launch"
+  ],
+
   "main": "./extension.js",
 
   "contributes": {
@@ -44,7 +49,7 @@
           "icon": {
             "light": "icons/icon.png",
             "dark": "icons/icon.png"
-}
+          }
         }
       ]
     },
