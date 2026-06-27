@@ -46,10 +46,7 @@
         {
           "id": "datadrift",
           "title": "Data Drift",
-          "icon": {
-            "light": "icons/icon.png",
-            "dark": "icons/icon.png"
-          }
+          "icon": "icons/icon.png"
         }
       ]
     },
@@ -58,7 +55,8 @@
       "datadrift": [
         {
           "id": "datadriftView",
-          "name": "Quick Break"
+          "name": "Quick Break",
+          "icon": "icons/icon.png"
         }
       ]
     }
