@@ -26,10 +26,7 @@
 
   "categories": ["Other"],
 
-  "activationEvents": [
-    
-    
-  ],
+  "activationEvents": [],
 
   "main": "./extension.js",
 
