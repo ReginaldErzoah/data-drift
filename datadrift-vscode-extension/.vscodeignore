@@ -5,13 +5,7 @@ __pycache__/
 *.spec
 
 node_modules/
-dist/**
-**/_internal/**
-**/numpy/**
-**/pygame/**
+
 **/.venv/**
 **/venv/**
 **/__pycache__/**
-*.pyc
-*.pyo
-*.pyd

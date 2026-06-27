@@ -25,7 +25,7 @@ function launchGame() {
     // SAFE PATH (your correct PyInstaller structure)
     const exePath = path.join(
         __dirname,
-        'dist',
+        'resources',
         'DataDrift',
         'DataDrift.exe'
     );
