@@ -26,11 +26,6 @@
 
   "categories": ["Other"],
 
-  "activationEvents": [
-    "onCommand:data-drift.launch",
-    "onView:datadriftView"
-  ],
-
   "main": "./extension.js",
 
   "contributes": {
@@ -46,7 +41,10 @@
         {
           "id": "datadrift",
           "title": "Data Drift",
-          "icon": "icons/icon.svg"
+          "icon": {
+            "light": "icons/icon.png",
+            "dark": "icons/icon.png"
+}
         }
       ]
     },
