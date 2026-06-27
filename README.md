@@ -1,7 +1,7 @@
 # Data Drift
 
 <p align="center">
-  <img src="https://github.com/ReginaldErzoah/data-drift/blob/main/assets/images/datadrift-logo.png" width="400" alt="Data Drift Logo" />
+  <img src="https://github.com/ReginaldErzoah/data-drift/blob/main/assets/images/datadrift-logo.png" width="300" alt="Data Drift Logo" />
 </p>
 
 <p align="center">
