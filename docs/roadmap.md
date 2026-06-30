@@ -113,7 +113,7 @@ A “break tool” for developers
 
 ## Goal
 
-Make it addictive but simple
+Make it engaging but simple
 
 ---
 
